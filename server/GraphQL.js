@@ -17,9 +17,7 @@ const getUser = (token) => {
 };
 
 module.exports = new ApolloServer({
-  // modules: [require("./typedefs/User"), require("./typedefs/Operations")],
-  typeDefs,
-  resolvers,
+  modules: [require("./Users"), require("./Operations")],
   context: ({ req }) => {
     const token = req.headers["x-auth-acc"];
     const user = getUser(token);

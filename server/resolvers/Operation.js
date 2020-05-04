@@ -1,4 +1,4 @@
-const { Purchase, Products } = require("../../database/models");
+const { Operations, Products } = require("../../database/models");
 
 module.exports = {
   getProduct: async (parent, args) => {
@@ -6,33 +6,35 @@ module.exports = {
     } catch (error) {}
   },
 
-  addPurchase: async (parent, { productId, value, amount }, { user }) => {
-    let purchaseId = null;
+  addPurchase: async (
+    parent,
+    { productId, clientId, value, amount },
+    { user }
+  ) => {
     try {
       if (user) {
         const { id } = user;
-        const purchase = await new Purchase({
+        const purchase = await new Operations({
+          type: 1,
           ProductsId: productId,
+          ClientsId: clientId,
           UsersId: id,
           value,
           amount,
         });
-        purchaseId = purchase.id;
 
         const product = await Products.findByPk(productId);
         product.stock = product.stock + amount;
         product.balanceStock =
           Number(product.balanceStock) + Number(amount) * Number(value);
 
-        const data = purchase.save();
-        product.save();
+        await purchase.save();
+        await product.save();
 
-        return data;
+        return { operation: purchase, products: product };
       }
     } catch (error) {
       console.log(error);
-      const data = await Purchase.findByPk(purchaseId);
-      data.destroy();
     }
   },
 };

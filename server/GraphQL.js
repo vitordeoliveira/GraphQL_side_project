@@ -17,6 +17,7 @@ const getUser = (token) => {
 };
 
 module.exports = new ApolloServer({
+  // modules: [require("./typedefs/User"), require("./typedefs/Operations")],
   typeDefs,
   resolvers,
   context: ({ req }) => {

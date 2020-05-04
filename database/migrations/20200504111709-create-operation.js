@@ -9,20 +9,19 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       type: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
+        references: { model: "type_operations", key: "id" },
         allowNull: false,
       },
       UsersId: {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
         allowNull: false,
-        onDelete: "Cascade",
       },
       ProductsId: {
         type: Sequelize.INTEGER,
         references: { model: "Products", key: "id" },
         allowNull: false,
-        onDelete: "Cascade",
       },
       ClientsId: {
         type: Sequelize.INTEGER,

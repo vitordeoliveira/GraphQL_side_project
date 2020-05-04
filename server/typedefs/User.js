@@ -1,21 +1,29 @@
-module.exports = {
-  types: `
-    type User {
+const { gql } = require("apollo-server-express");
+const { getUsers } = require("../resolvers/User");
+
+const typeDefs = gql`
+  scalar Date
+  type User {
     id: ID!
     CompaniesId: ID!
     role: String!
     name: String!
     username: String!
     password: String!
-    Purchases: [Purchase]
+    Operations: [Operation]
     createdAt: Date
     updatedAt: Date
   }
-`,
 
-  query: `
-    getUsers(filterById:ID, filterByName:String): [User]
-`,
+  extend type Query {
+    getUsers(filterById: ID, filterByName: String): [User]
+  }
+`;
 
-  mutation: `login(username: String!, password: String!): LoginResponse`,
+const resolvers = {
+  Query: {
+    getUsers,
+  },
 };
+
+module.exports = { typeDefs, resolvers };

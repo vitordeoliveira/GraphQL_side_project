@@ -1,0 +1,21 @@
+{
+  "name": "mac_sucatas_graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Vitor de Oliveira <vitordeoliveira50@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "database": "sudo /opt/lampp/lampp start"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.12.0",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "graphql": "^15.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^5.21.7"
+  }
+}

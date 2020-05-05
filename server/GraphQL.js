@@ -1,6 +1,4 @@
 const { ApolloServer } = require("apollo-server-express");
-const typeDefs = require("./typedefs");
-const resolvers = require("./resolvers");
 
 const jwt = require("jsonwebtoken");
 
@@ -17,7 +15,14 @@ const getUser = (token) => {
 };
 
 module.exports = new ApolloServer({
-  modules: [require("./Users"), require("./Operations")],
+  modules: [
+    require("./Users"),
+    require("./Operations"),
+    require("./Auth"),
+    require("./Products"),
+    require("./Clients"),
+    require("./Companies"),
+  ],
   context: ({ req }) => {
     const token = req.headers["x-auth-acc"];
     const user = getUser(token);

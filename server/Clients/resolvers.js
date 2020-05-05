@@ -1,7 +1,7 @@
 const { Clients } = require("../../database/models");
 
 module.exports = {
-  getProduct: async (parent, args) => {
+  getClients: async (parent, args) => {
     try {
     } catch (error) {}
   },

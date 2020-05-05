@@ -7,6 +7,7 @@ const typeDefs = gql`
     type: ID!
     UsersId: ID!
     ClientsId: ID!
+    ProductsId: ID!
     value: Float!
     amount: Float!
     createdAt: Date
@@ -15,6 +16,7 @@ const typeDefs = gql`
 
   type OperationResponse {
     operation: Operation
+    products: Product
   }
 
   extend type Query {
@@ -39,6 +41,9 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     getOperation,
+  },
+  Mutation: {
+    addPurchase,
   },
 };
 

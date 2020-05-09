@@ -1,5 +1,5 @@
 const { gql } = require("apollo-server-express");
-const { addPurchase, getOperation } = require("./resolvers");
+const { addPurchase, getOperation, addSale } = require("./resolvers");
 
 const typeDefs = gql`
   type Operation {
@@ -17,6 +17,7 @@ const typeDefs = gql`
   type OperationResponse {
     operation: Operation
     products: Product
+    company: Company
   }
 
   extend type Query {
@@ -34,7 +35,13 @@ const typeDefs = gql`
       value: Float!
       amount: Float!
     ): OperationResponse
-    addSale(productId: ID!, value: Float!, amount: Float!): Operation
+
+    addSale(
+      productId: ID!
+      clientId: ID
+      value: Float!
+      amount: Float!
+    ): OperationResponse
   }
 `;
 
@@ -44,6 +51,7 @@ const resolvers = {
   },
   Mutation: {
     addPurchase,
+    addSale,
   },
 };
 

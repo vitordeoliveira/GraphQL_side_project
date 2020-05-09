@@ -1,10 +1,14 @@
 const { gql } = require("apollo-server-express");
-const { login, register } = require("./resolvers");
+const { auth, login, register } = require("./resolvers");
 
 const typeDefs = gql`
   type LoginResponse {
     token: String
     user: User
+  }
+
+  extend type Query {
+    auth: User
   }
 
   extend type Mutation {
@@ -20,7 +24,7 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Query: {},
+  Query: { auth },
   Mutation: {
     login,
     register,

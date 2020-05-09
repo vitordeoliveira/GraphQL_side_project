@@ -6,11 +6,10 @@ const typeDefs = gql`
 
   type User {
     id: ID!
-    CompaniesId: ID!
+    CompaniesId: ID
     role: String!
     name: String!
     username: String!
-    password: String!
     Operations: [Operation]
     createdAt: Date
     updatedAt: Date

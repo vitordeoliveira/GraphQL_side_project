@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     "Companies",
     {
       name: DataTypes.STRING,
+      balance: DataTypes.DECIMAL(10, 2),
     },
     {}
   );

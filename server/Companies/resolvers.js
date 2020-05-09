@@ -12,6 +12,7 @@ module.exports = {
             },
           ],
         });
+
         return company;
       }
     } catch (error) {

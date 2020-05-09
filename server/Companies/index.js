@@ -6,6 +6,7 @@ const typeDefs = gql`
     id: ID!
     Users: [User]
     name: String!
+    balance: Float
     createdAt: Date
     updatedAt: Date
   }

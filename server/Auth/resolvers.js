@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 module.exports = {
+  auth: async (_, __, { user }) => {
+    return user;
+  },
   login: async (_, { username, password }) => {
     const user = await Users.findOne({
       where: { username },
@@ -10,20 +13,20 @@ module.exports = {
     });
 
     if (!user) {
-      return { token: "Usuário não existe", user: null };
+      return { token: null };
     }
 
     const valid = bcrypt.compareSync(password, user.password);
 
     if (!valid) {
-      return { token: "Senha inválida", user: null };
+      return { token: null };
     }
 
     user.password = undefined;
 
     const token = jwt.sign({ user }, "process.env.SECRET");
 
-    return { token, user };
+    return { token, user, error: null };
   },
 
   register: async (parent, { CompaniesId, role, name, username, password }) => {

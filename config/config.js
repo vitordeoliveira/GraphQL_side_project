@@ -17,8 +17,8 @@ module.exports = {
 
   production: {
     port: "41890",
-    username: process.env.USER,
-    password: process.env.PASSWORD,
+    username: "macsucatas",
+    password: "macsucatas1",
     database: "macsucatas",
     host: "mysql669.umbler.com",
     dialect: "mysql",

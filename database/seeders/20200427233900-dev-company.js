@@ -6,7 +6,7 @@ module.exports = {
       "Companies",
       [
         {
-          name: "DevCompany",
+          name: "Mac Sucatas",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

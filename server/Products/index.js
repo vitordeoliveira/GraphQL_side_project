@@ -1,5 +1,10 @@
 const { gql } = require("apollo-server-express");
-const { addProduct, getProduct, deleteProduct } = require("./resolvers");
+const {
+  addProduct,
+  getProduct,
+  deleteProduct,
+  updateProduct,
+} = require("./resolvers");
 
 const typeDefs = gql`
   type Product {
@@ -12,13 +17,24 @@ const typeDefs = gql`
     updatedAt: Date
   }
 
+  type deleteProduct {
+    success: Boolean!
+    error: String
+  }
+
   extend type Query {
-    getProduct(id: ID, CompaniesId: ID, name: String): [Product]
+    getProduct(filterById: ID): [Product]
   }
 
   extend type Mutation {
     addProduct(name: String!, stock: Int, balanceStock: Float): Product
-    deleteProduct(id: ID!): String
+    deleteProduct(id: ID!): deleteProduct
+    updateProduct(
+      id: ID!
+      name: String
+      stock: Int
+      balanceStock: Float
+    ): Boolean
   }
 `;
 
@@ -29,6 +45,7 @@ const resolvers = {
 
   Mutation: {
     addProduct,
+    updateProduct,
     deleteProduct,
   },
 };

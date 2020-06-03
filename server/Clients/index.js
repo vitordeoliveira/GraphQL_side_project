@@ -1,5 +1,10 @@
 const { gql } = require("apollo-server-express");
-const { addClient, getClients } = require("./resolvers");
+const {
+  addClient,
+  getClients,
+  deleteClient,
+  updateClient,
+} = require("./resolvers");
 
 const typeDefs = gql`
   type Client {
@@ -19,12 +24,22 @@ const typeDefs = gql`
 
   extend type Mutation {
     addClient(
-      type: ID
-      name: String
+      type: ID!
+      name: String!
       email: String
       phone: String
       comments: String
     ): Client
+
+    deleteClient(id: ID!): Boolean
+
+    updateClient(
+      id: ID!
+      name: String
+      email: String
+      phone: String
+      comments: String
+    ): Boolean
   }
 `;
 
@@ -34,6 +49,8 @@ const resolvers = {
   },
   Mutation: {
     addClient,
+    updateClient,
+    deleteClient,
   },
 };
 

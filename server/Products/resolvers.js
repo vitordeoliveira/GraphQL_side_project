@@ -33,11 +33,6 @@ module.exports = {
 
   updateProduct: async (_, { id, name, stock, balanceStock }, { user }) => {
     try {
-      // const product = await Products.findByPk(id);
-      // product.name = name || product.name;
-      // product.stock = stock || product.stock;
-      // product.balanceStock = balanceStock || product.balanceStock;
-
       const [result] = await Products.update(
         { name, stock, balanceStock },
         {

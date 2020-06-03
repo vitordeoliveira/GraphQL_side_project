@@ -16,11 +16,11 @@ module.exports = {
   },
 
   production: {
-    port: "41890",
-    username: "macsucatas",
-    password: "macsucatas1",
+    port: "3306",
+    username: process.env.USERDB,
+    password: process.env.PASSWORDDB,
     database: "macsucatas",
-    host: "mysql669.umbler.com",
+    host: process.env.HOST,
     dialect: "mysql",
   },
 };

@@ -1,9 +1,38 @@
-const { Operations, Products, Companies } = require("../../database/models");
+const {
+  Operations,
+  Products,
+  Companies,
+  Users,
+  Clients,
+} = require("../../database/models");
 
 module.exports = {
-  getOperation: async (parent, args) => {
+  getOperation: async (parent, args, { user }) => {
     try {
-    } catch (error) {}
+      const operations = await Operations.findAll({
+        include: [
+          {
+            model: Users,
+            as: "Users",
+            where: {
+              CompaniesId: user.CompaniesId,
+            },
+          },
+          {
+            model: Products,
+            as: "Products",
+          },
+          {
+            model: Clients,
+            as: "Clients",
+          },
+        ],
+      });
+
+      return operations;
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   addPurchase: async (

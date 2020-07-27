@@ -2,6 +2,7 @@ const { gql } = require("apollo-server-express");
 const {
   addProduct,
   getProduct,
+  getStockBalance,
   deleteProduct,
   updateProduct,
 } = require("./resolvers");
@@ -24,6 +25,7 @@ const typeDefs = gql`
 
   extend type Query {
     getProduct(filterById: ID): [Product]
+    getStockBalance: Float
   }
 
   extend type Mutation {
@@ -41,6 +43,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     getProduct,
+    getStockBalance,
   },
 
   Mutation: {

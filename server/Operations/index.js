@@ -8,6 +8,9 @@ const typeDefs = gql`
     UsersId: ID!
     ClientsId: ID!
     ProductsId: ID!
+    Users: User
+    Products: Product
+    Clients: Client
     value: Float!
     amount: Float!
     createdAt: Date

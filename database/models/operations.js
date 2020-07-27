@@ -10,9 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Operations.associate = function (models) {
-    this.belongsTo(models.Users, { foreignKey: "UsersId" });
-    this.belongsTo(models.Products, { foreignKey: "ProductsId" });
-    this.belongsTo(models.Clients, { foreignKey: "ClientsId" });
+    this.belongsTo(models.Users, { foreignKey: "UsersId", as: "Users" });
+    this.belongsTo(models.Products, {
+      foreignKey: "ProductsId",
+      as: "Products",
+    });
+    this.belongsTo(models.Clients, { foreignKey: "ClientsId", as: "Clients" });
   };
   return Operations;
 };

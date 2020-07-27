@@ -15,6 +15,21 @@ module.exports = {
     } catch (error) {}
   },
 
+  getStockBalance: async (parent, args) => {
+    try {
+      const product = await Products.findAll();
+      let value = 0;
+
+      product.forEach((item) => {
+        value = value + Number(item.balanceStock);
+      });
+
+      return value;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   addProduct: async (parent, { name, stock, balanceStock }, { user }) => {
     try {
       const { CompaniesId } = user;

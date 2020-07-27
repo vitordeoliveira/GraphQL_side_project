@@ -17,15 +17,18 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
         allowNull: false,
+        onDelete: "cascade",
       },
       ProductsId: {
         type: Sequelize.INTEGER,
         references: { model: "Products", key: "id" },
         allowNull: false,
+        onDelete: "cascade",
       },
       ClientsId: {
         type: Sequelize.INTEGER,
         references: { model: "Clients", key: "id" },
+        onDelete: "cascade",
       },
       value: {
         type: Sequelize.DECIMAL(10, 2),

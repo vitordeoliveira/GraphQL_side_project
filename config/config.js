@@ -16,7 +16,7 @@ module.exports = {
   },
 
   production: {
-    port: "3306",
+    // port: "41890",
     username: "macsucatas",
     password: "macsucatas1",
     database: "macsucatas",

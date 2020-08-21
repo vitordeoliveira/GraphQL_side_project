@@ -35,11 +35,7 @@ module.exports = {
     }
   },
 
-  addPurchase: async (
-    parent,
-    { productId, clientId, value, amount },
-    { user }
-  ) => {
+  addPurchase: async (_, { productId, clientId, value, amount }, { user }) => {
     try {
       if (user) {
         const { id, CompaniesId } = user;

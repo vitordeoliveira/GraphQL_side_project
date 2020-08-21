@@ -22,6 +22,7 @@ module.exports = new ApolloServer({
     require("./Products"),
     require("./Clients"),
     require("./Companies"),
+    require("./Notes"),
   ],
   context: ({ req }) => {
     const token = req.headers["x-auth-acc"];

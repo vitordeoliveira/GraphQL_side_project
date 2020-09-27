@@ -3,7 +3,6 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
-require("dotenv").config({ path: "./config/.env" });
 require("./database/models");
 
 const Apollo = require("./server/GraphQL");

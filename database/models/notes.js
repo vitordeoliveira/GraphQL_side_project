@@ -1,4 +1,5 @@
 "use strict";
+
 module.exports = (sequelize, DataTypes) => {
   const Notes = sequelize.define(
     "Notes",
@@ -10,6 +11,48 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
+  Notes.afterUpdate(async (note) => {
+    const { Companies } = require(".");
+
+    const company = await Companies.findByPk(note.CompaniesId);
+
+    if (note.type === 1) {
+      company.balance = Number(company.balance) - Number(note.total);
+    }
+
+    if (note.type === 2) {
+      company.balance = Number(company.balance) + Number(note.total);
+    }
+
+    await company.save();
+  });
+
+  Notes.beforeDestroy(async (data) => {
+    const { Notes, Operations, Products } = require(".");
+
+    const note = await Notes.findByPk(data.id, {
+      include: [
+        {
+          model: Operations,
+          as: "Operations",
+          include: [
+            {
+              model: Products,
+              as: "Products",
+            },
+          ],
+        },
+      ],
+    });
+
+    console.log(note);
+
+    for (let i = 0; i < note.Operations.length; i++) {
+      const operation = await Operations.findByPk(note.Operations[i].id);
+      await operation.destroy();
+    }
+  });
+
   Notes.associate = function (models) {
     this.belongsTo(models.Clients, { foreignKey: "ClientsId", as: "Clients" });
     this.belongsTo(models.Companies, {

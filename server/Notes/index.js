@@ -1,5 +1,10 @@
 const { gql } = require("apollo-server-express");
-const { getNotes, addPurchaseNote, addSaleNote } = require("./resolvers");
+const {
+  getNotes,
+  addPurchaseNote,
+  addSaleNote,
+  updateNote,
+} = require("./resolvers");
 
 const typeDefs = gql`
   type Notes {
@@ -43,6 +48,15 @@ const typeDefs = gql`
       total: Float
       operation: [OperationsInput]
     ): Notes
+
+    updateNote(
+      type: ID
+      noteId: ID
+      additional: Float
+      discount: Float
+      total: Float
+      operation: [OperationsInput]
+    ): Notes
   }
 `;
 
@@ -53,6 +67,7 @@ const resolvers = {
   Mutation: {
     addPurchaseNote,
     addSaleNote,
+    updateNote,
   },
 };
 

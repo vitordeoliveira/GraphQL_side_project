@@ -40,6 +40,7 @@ module.exports = {
         stock,
         balanceStock,
       });
+
       return product;
     } catch (error) {
       console.log(error);

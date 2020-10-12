@@ -48,7 +48,6 @@ module.exports = {
     try {
       const { id, CompaniesId } = user;
 
-      console.log(user);
       const additional = args.additional || 0;
       const discount = args.discount || 0;
 
@@ -61,7 +60,6 @@ module.exports = {
         discount,
         total: 0,
       });
-      const company = await Companies.findByPk(CompaniesId);
 
       const operations = args.operation.map((item) =>
         JSON.parse(JSON.stringify(item))
@@ -71,16 +69,8 @@ module.exports = {
 
       for (let i = 0; i < operations.length; i++) {
         let item = operations[i];
-        let product = await Products.findByPk(item.productId);
-
-        product.stock = Number(product.stock) + Number(item.amount);
-        product.balanceStock =
-          Number(product.balanceStock) +
-          Number(item.amount) * Number(item.value);
-
         total = total + item.value * item.amount;
 
-        await product.save();
         await Operations.create({
           type: 1,
           NotesId: note.id,
@@ -93,9 +83,6 @@ module.exports = {
       }
 
       note.total = total + additional - discount;
-      company.balance = company.balance - (total + additional - discount);
-
-      await company.save();
       await note.save();
       return note;
     } catch (error) {
@@ -111,12 +98,13 @@ module.exports = {
 
       const note = await Notes.create({
         type: 2,
+        UsersId: id,
+        CompaniesId: CompaniesId,
         ClientsId: args.clientId,
-        additional: additional || 0,
-        discount: discount || 0,
+        additional,
+        discount,
         total: 0,
       });
-      const company = await Companies.findByPk(CompaniesId);
 
       const operations = args.operation.map((item) =>
         JSON.parse(JSON.stringify(item))
@@ -126,21 +114,9 @@ module.exports = {
 
       for (let i = 0; i < operations.length; i++) {
         const item = operations[i];
-        const product = await Products.findByPk(item.productId);
-
-        if (product.stock < Number(item.amount)) continue;
-
-        product.stock = Number(product.stock) - Number(item.amount);
-
-        product.balanceStock =
-          Number(product.balanceStock) -
-          Number(item.amount) * Number(item.value);
-
-        if (product.balanceStock < 0) product.balanceStock = 0;
 
         total = total + item.value * item.amount;
 
-        await product.save();
         await Operations.create({
           type: 2,
           NotesId: note.id,
@@ -153,14 +129,59 @@ module.exports = {
       }
 
       note.total = total - additional + discount;
-      company.balance =
-        Number(company.balance) + (total - additional + discount);
-
-      await company.save();
       await note.save();
       return note;
     } catch (error) {
       console.log(error);
     }
+  },
+
+  updateNote: async (parent, args, { user }) => {
+    if (!(user.role === "admin" || user.role === "dev")) throw "Error";
+
+    const note = await Notes.findByPk(args.noteId);
+    await note.destroy();
+
+    const { id, CompaniesId } = user;
+
+    const additional = args.additional || 0;
+    const discount = args.discount || 0;
+
+    const note = await Notes.create({
+      type: args.type,
+      UsersId: id,
+      CompaniesId: CompaniesId,
+      ClientsId: args.clientId,
+      additional,
+      discount,
+      total: 0,
+    });
+
+    const operations = args.operation.map((item) =>
+      JSON.parse(JSON.stringify(item))
+    );
+
+    let total = 0;
+
+    for (let i = 0; i < operations.length; i++) {
+      let item = operations[i];
+      total = total + item.value * item.amount;
+
+      await Operations.create({
+        type: args.type,
+        NotesId: note.id,
+        ProductsId: item.productId,
+        ClientsId: args.clientId,
+        UsersId: id,
+        value: item.value,
+        amount: item.amount,
+      });
+    }
+
+    if (args.type == 1) note.total = total + additional - discount;
+    if (args.type == 2) note.total = total - additional + discount;
+
+    await note.save();
+    return note;
   },
 };

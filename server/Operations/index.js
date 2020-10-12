@@ -17,12 +17,6 @@ const typeDefs = gql`
     updatedAt: Date
   }
 
-  type OperationResponse {
-    operation: Operation
-    products: Product
-    company: Company
-  }
-
   extend type Query {
     getOperation(
       filterById: ID
@@ -35,16 +29,18 @@ const typeDefs = gql`
     addPurchase(
       productId: ID!
       clientId: ID
+      noteId: ID!
       value: Float!
       amount: Float!
-    ): OperationResponse
+    ): Operation
 
     addSale(
       productId: ID!
       clientId: ID
+      noteId: ID!
       value: Float!
       amount: Float!
-    ): OperationResponse
+    ): Operation
   }
 `;
 

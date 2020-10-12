@@ -35,12 +35,17 @@ module.exports = {
     }
   },
 
-  addPurchase: async (_, { productId, clientId, value, amount }, { user }) => {
+  addPurchase: async (
+    _,
+    { productId, clientId, noteId, value, amount },
+    { user }
+  ) => {
     try {
       if (user) {
-        const { id, CompaniesId } = user;
+        const { id } = user;
         const purchase = await new Operations({
           type: 1,
+          NotesId: noteId,
           ProductsId: productId,
           ClientsId: clientId,
           UsersId: id,
@@ -48,20 +53,9 @@ module.exports = {
           amount,
         });
 
-        const product = await Products.findByPk(productId);
-        const company = await Companies.findByPk(CompaniesId);
-
-        product.stock = product.stock + amount;
-        product.balanceStock =
-          Number(product.balanceStock) + Number(amount) * Number(value);
-        company.balance =
-          Number(company.balance) - Number(amount) * Number(value);
-
         await purchase.save();
-        await product.save();
-        await company.save();
 
-        return { operation: purchase, products: product, company };
+        return purchase;
       }
     } catch (error) {
       console.log(error);
@@ -71,7 +65,7 @@ module.exports = {
   addSale: async (parent, { productId, clientId, value, amount }, { user }) => {
     try {
       if (user) {
-        const { id, CompaniesId } = user;
+        const { id } = user;
 
         const sale = await new Operations({
           type: 2,
@@ -83,27 +77,14 @@ module.exports = {
         });
 
         const product = await Products.findByPk(productId);
-        const company = await Companies.findByPk(CompaniesId);
 
         if (product.stock >= Number(amount)) {
-          product.stock = product.stock - amount;
-          product.balanceStock =
-            Number(product.balanceStock) - Number(amount) * Number(value);
-          company.balance =
-            Number(company.balance) + Number(amount) * Number(value);
-
-          if (product.balanceStock < 0) {
-            product.balanceStock = 0;
-          }
-        } else {
           return null;
         }
 
         await sale.save();
-        await product.save();
-        await company.save();
 
-        return { operation: sale, products: product, company };
+        return { operation: sale };
       }
     } catch (error) {
       console.log(error);

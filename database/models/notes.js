@@ -17,11 +17,11 @@ module.exports = (sequelize, DataTypes) => {
 
     const company = await Companies.findByPk(note.CompaniesId);
 
-    if (note.type === 1) {
+    if (note.type == 1) {
       company.balance = Number(company.balance) - Number(note.total);
     }
 
-    if (note.type === 2) {
+    if (note.type == 2) {
       company.balance = Number(company.balance) + Number(note.total);
     }
 
@@ -51,11 +51,11 @@ module.exports = (sequelize, DataTypes) => {
       await operation.destroy();
     }
 
-    if (note.type === 1) {
+    if (note.type == 1) {
       company.balance = Number(company.balance) + Number(note.total);
     }
 
-    if (note.type === 2) {
+    if (note.type == 2) {
       company.balance = Number(company.balance) - Number(note.total);
     }
 

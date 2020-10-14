@@ -15,15 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     const { amount, ProductsId, type, value } = operation;
     const product = await Products.findByPk(ProductsId);
 
-    if (type === 2) {
-      if (product.stock >= Number(amount)) {
-        product.stock = product.stock - amount;
-        product.balanceStock =
-          Number(product.balanceStock) - Number(amount) * Number(value);
+    if (type == 2) {
+      product.stock = Number(product.stock) - Number(amount);
+      product.balanceStock =
+        Number(product.balanceStock) - Number(amount) * Number(value);
 
-        if (product.balanceStock < 0) {
-          product.balanceStock = 0;
-        }
+      if (product.balanceStock < 0) {
+        product.balanceStock = 0;
       }
     }
 
@@ -36,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
 
     const product = await Products.findByPk(ProductsId);
 
-    if (type === 1) {
-      product.stock = product.stock + amount;
+    if (type == 1) {
+      product.stock = Number(product.stock) + Number(amount);
       product.balanceStock =
         Number(product.balanceStock) + Number(amount) * Number(value);
     }
@@ -50,13 +48,13 @@ module.exports = (sequelize, DataTypes) => {
     const { amount, ProductsId, type, value } = operation;
     const product = await Products.findByPk(ProductsId);
 
-    if (type === 1) {
+    if (type == 1) {
       product.stock = product.stock - amount;
       product.balanceStock =
         Number(product.balanceStock) - Number(amount) * Number(value);
     }
 
-    if (type === 2) {
+    if (type == 2) {
       product.stock = product.stock + amount;
       product.balanceStock =
         Number(product.balanceStock) + Number(amount) * Number(value);

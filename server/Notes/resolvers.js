@@ -120,9 +120,13 @@ module.exports = {
 
         const product = await Products.findByPk(item.productId);
 
-        if (product.stock < item.amount || item.amount === 0) continue;
+        if (
+          Number(product.stock) < Number(item.amount) ||
+          Number(item.amount) == 0
+        )
+          continue;
 
-        total = total + item.value * item.amount;
+        total = Number(total) + Number(item.value) * Number(item.amount);
 
         await Operations.create({
           type: 2,
@@ -170,23 +174,51 @@ module.exports = {
 
     let total = 0;
 
-    for (let i = 0; i < operations.length; i++) {
-      const item = operations[i];
-      total = total + item.value * item.amount;
+    if (note.type == 1) {
+      for (let i = 0; i < operations.length; i++) {
+        let item = operations[i];
 
-      await Operations.create({
-        type: args.type,
-        NotesId: note.id,
-        ProductsId: item.productId,
-        ClientsId: args.clientId,
-        UsersId: id,
-        value: item.value,
-        amount: item.amount,
-      });
+        if (item.value * item.amount <= 0) continue;
+
+        total = total + item.value * item.amount;
+
+        await Operations.create({
+          type: 1,
+          NotesId: note.id,
+          ProductsId: item.productId,
+          ClientsId: args.clientId,
+          UsersId: id,
+          value: item.value,
+          amount: item.amount,
+        });
+      }
+
+      note.total = total + additional - discount;
     }
 
-    // if (args.type == 1) note.total = total;
-    // if (args.type == 2) note.total = total;
+    if (note.type == 2) {
+      for (let i = 0; i < operations.length; i++) {
+        const item = operations[i];
+
+        const product = await Products.findByPk(item.productId);
+
+        if (product.stock < item.amount || item.amount === 0) continue;
+
+        total = total + item.value * item.amount;
+
+        await Operations.create({
+          type: 2,
+          NotesId: note.id,
+          ProductsId: item.productId,
+          ClientsId: args.clientId,
+          UsersId: id,
+          value: item.value,
+          amount: item.amount,
+        });
+      }
+
+      note.total = total + Number(additional) - Number(discount);
+    }
 
     await note.save();
     return note;

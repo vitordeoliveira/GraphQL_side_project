@@ -52,6 +52,7 @@ const typeDefs = gql`
     updateNote(
       type: ID
       noteId: ID
+      clientId: ID
       additional: Float
       discount: Float
       total: Float

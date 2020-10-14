@@ -1,7 +1,5 @@
 "use strict";
 
-const { Companies, Users } = require(".");
-
 module.exports = (sequelize, DataTypes) => {
   const Operations = sequelize.define(
     "Operations",
@@ -12,29 +10,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Operations.afterCreate(async (operation) => {
-    const { Companies, Users, Products } = require(".");
-    const { amount, ProductsId, UsersId, type, value } = operation;
-
-    const user = await Users.findByPk(UsersId);
+  Operations.beforeCreate(async (operation) => {
+    const { Products } = require(".");
+    const { amount, ProductsId, type, value } = operation;
     const product = await Products.findByPk(ProductsId);
-    const company = await Companies.findByPk(user.CompaniesId);
-
-    if (type === 1) {
-      product.stock = product.stock + amount;
-      product.balanceStock =
-        Number(product.balanceStock) + Number(amount) * Number(value);
-      company.balance =
-        Number(company.balance) - Number(amount) * Number(value);
-    }
 
     if (type === 2) {
       if (product.stock >= Number(amount)) {
         product.stock = product.stock - amount;
         product.balanceStock =
           Number(product.balanceStock) - Number(amount) * Number(value);
-        company.balance =
-          Number(company.balance) + Number(amount) * Number(value);
 
         if (product.balanceStock < 0) {
           product.balanceStock = 0;
@@ -43,34 +28,41 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     await product.save();
-    await company.save();
+  });
+
+  Operations.afterCreate(async (operation) => {
+    const { Products } = require(".");
+    const { amount, ProductsId, type, value } = operation;
+
+    const product = await Products.findByPk(ProductsId);
+
+    if (type === 1) {
+      product.stock = product.stock + amount;
+      product.balanceStock =
+        Number(product.balanceStock) + Number(amount) * Number(value);
+    }
+
+    await product.save();
   });
 
   Operations.beforeDestroy(async (operation) => {
-    const { Companies, Users, Products } = require(".");
-    const { amount, ProductsId, UsersId, type, value } = operation;
-    const user = await Users.findByPk(UsersId);
+    const { Products } = require(".");
+    const { amount, ProductsId, type, value } = operation;
     const product = await Products.findByPk(ProductsId);
-    const company = await Companies.findByPk(user.CompaniesId);
 
     if (type === 1) {
       product.stock = product.stock - amount;
       product.balanceStock =
         Number(product.balanceStock) - Number(amount) * Number(value);
-      company.balance =
-        Number(company.balance) + Number(amount) * Number(value);
     }
 
     if (type === 2) {
       product.stock = product.stock + amount;
       product.balanceStock =
         Number(product.balanceStock) + Number(amount) * Number(value);
-      company.balance =
-        Number(company.balance) - Number(amount) * Number(value);
     }
 
     await product.save();
-    await company.save();
   });
 
   Operations.associate = function (models) {

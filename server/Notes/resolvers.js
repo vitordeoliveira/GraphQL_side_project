@@ -69,6 +69,9 @@ module.exports = {
 
       for (let i = 0; i < operations.length; i++) {
         let item = operations[i];
+
+        if (item.value * item.amount <= 0) continue;
+
         total = total + item.value * item.amount;
 
         await Operations.create({
@@ -83,8 +86,8 @@ module.exports = {
       }
 
       note.total = total + additional - discount;
-      await note.save();
-      return note;
+
+      return !(note.total === 0) ? await note.save() : await note.destroy();
     } catch (error) {
       console.log(error);
     }
@@ -115,6 +118,10 @@ module.exports = {
       for (let i = 0; i < operations.length; i++) {
         const item = operations[i];
 
+        const product = await Products.findByPk(item.productId);
+
+        if (product.stock < item.amount || item.amount === 0) continue;
+
         total = total + item.value * item.amount;
 
         await Operations.create({
@@ -129,8 +136,8 @@ module.exports = {
       }
 
       note.total = total - additional + discount;
-      await note.save();
-      return note;
+
+      return !(note.total === 0) ? await note.save() : await note.destroy();
     } catch (error) {
       console.log(error);
     }
@@ -139,8 +146,8 @@ module.exports = {
   updateNote: async (parent, args, { user }) => {
     if (!(user.role === "admin" || user.role === "dev")) throw "Error";
 
-    const note = await Notes.findByPk(args.noteId);
-    await note.destroy();
+    const deletenote = await Notes.findByPk(args.noteId);
+    await deletenote.destroy();
 
     const { id, CompaniesId } = user;
 
@@ -164,7 +171,7 @@ module.exports = {
     let total = 0;
 
     for (let i = 0; i < operations.length; i++) {
-      let item = operations[i];
+      const item = operations[i];
       total = total + item.value * item.amount;
 
       await Operations.create({
@@ -178,8 +185,8 @@ module.exports = {
       });
     }
 
-    if (args.type == 1) note.total = total + additional - discount;
-    if (args.type == 2) note.total = total - additional + discount;
+    // if (args.type == 1) note.total = total;
+    // if (args.type == 2) note.total = total;
 
     await note.save();
     return note;

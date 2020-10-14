@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
+
   Notes.afterUpdate(async (note) => {
     const { Companies } = require(".");
 
@@ -28,8 +29,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Notes.beforeDestroy(async (data) => {
-    const { Notes, Operations, Products } = require(".");
-
+    const { Notes, Operations, Products, Companies } = require(".");
     const note = await Notes.findByPk(data.id, {
       include: [
         {
@@ -44,13 +44,22 @@ module.exports = (sequelize, DataTypes) => {
         },
       ],
     });
-
-    console.log(note);
+    const company = await Companies.findByPk(data.CompaniesId);
 
     for (let i = 0; i < note.Operations.length; i++) {
       const operation = await Operations.findByPk(note.Operations[i].id);
       await operation.destroy();
     }
+
+    if (note.type === 1) {
+      company.balance = Number(company.balance) + Number(note.total);
+    }
+
+    if (note.type === 2) {
+      company.balance = Number(company.balance) - Number(note.total);
+    }
+
+    await company.save();
   });
 
   Notes.associate = function (models) {

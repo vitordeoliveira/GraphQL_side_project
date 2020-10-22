@@ -1,7 +1,6 @@
 const {
   Operations,
   Products,
-  Companies,
   Users,
   Clients,
 } = require("../../database/models");

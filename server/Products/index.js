@@ -14,6 +14,7 @@ const typeDefs = gql`
     name: String!
     stock: Int
     balanceStock: Float
+    last_purchase: Float
     createdAt: Date
     updatedAt: Date
   }

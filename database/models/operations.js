@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       product.stock = Number(product.stock) + Number(amount);
       product.balanceStock =
         Number(product.balanceStock) + Number(amount) * Number(value);
+      product.last_purchase = Number(value);
     }
 
     await product.save();

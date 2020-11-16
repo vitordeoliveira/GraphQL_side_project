@@ -16,7 +16,7 @@ const typeDefs = gql`
   }
 
   extend type Mutation {
-    addCompany(name: String): Company
+    addCompany(name: String): Boolean
     deleteCompany(id: Int): String
   }
 `;

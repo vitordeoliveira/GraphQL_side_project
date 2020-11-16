@@ -1,4 +1,4 @@
-const { Users, Operations } = require("../../database/models");
+const { Users, Operations, Companies } = require("../../database/models");
 
 module.exports = {
   getUsers: async (root, args, context) => {
@@ -8,6 +8,12 @@ module.exports = {
           {
             model: Operations,
             as: "Operations",
+          },
+        ],
+        include: [
+          {
+            model: Companies,
+            as: "Company",
           },
         ],
       });

@@ -1,28 +1,43 @@
 const { Products } = require("../../database/models");
 
 module.exports = {
-  getProduct: async (parent, args) => {
+  getProduct: async (parent, args, { user }) => {
     try {
-      const product = await Products.findAll();
-
-      if (args.filterById) {
-        const filterById = product.filter((users) => {
-          return users.id == args.filterById;
-        });
-        return filterById;
+      if (user.role === "admin" || user.role === "dev") {
+        return await Products.findAll();
       }
-      return product;
-    } catch (error) {}
+
+      if (user.role === "subadmin") {
+        return await Products.findAll({
+          where: { CompaniesId: user.CompaniesId },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   },
 
-  getStockBalance: async (parent, args) => {
+  getStockBalance: async (parent, args, { user }) => {
     try {
-      const product = await Products.findAll();
       let value = 0;
 
-      product.forEach((item) => {
-        value = value + Number(item.balanceStock);
-      });
+      if (user.role === "admin" || user.role === "dev") {
+        const product = await Products.findAll();
+
+        product.forEach((item) => {
+          value = value + Number(item.balanceStock);
+        });
+      }
+
+      if (user.role === "subadmin") {
+        const product = await Products.findAll({
+          where: { CompaniesId: user.CompaniesId },
+        });
+
+        product.forEach((item) => {
+          value = value + Number(item.balanceStock);
+        });
+      }
 
       return value;
     } catch (error) {

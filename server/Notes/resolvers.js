@@ -38,6 +38,14 @@ module.exports = {
         ],
       });
 
+      if (user.role === "subadmin") {
+        const filterNotes = notes.filter(
+          (item) => item.Companies.id == user.CompaniesId
+        );
+
+        return filterNotes;
+      }
+
       return notes;
     } catch (error) {
       console.log(error);
@@ -79,6 +87,7 @@ module.exports = {
           NotesId: note.id,
           ProductsId: item.productId,
           ClientsId: args.clientId,
+          CompaniesId: user.CompaniesId,
           UsersId: id,
           value: item.value,
           amount: item.amount,
@@ -133,6 +142,7 @@ module.exports = {
           NotesId: note.id,
           ProductsId: item.productId,
           ClientsId: args.clientId,
+          CompaniesId: user.CompaniesId,
           UsersId: id,
           value: item.value,
           amount: item.amount,

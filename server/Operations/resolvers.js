@@ -13,9 +13,6 @@ module.exports = {
           {
             model: Users,
             as: "Users",
-            where: {
-              CompaniesId: user.CompaniesId,
-            },
           },
           {
             model: Products,
@@ -27,6 +24,14 @@ module.exports = {
           },
         ],
       });
+
+      if (user.role === "subadmin") {
+        const filterOperations = operations.filter(
+          (item) => item.CompaniesId == user.CompaniesId
+        );
+
+        return filterOperations;
+      }
 
       return operations;
     } catch (error) {
@@ -40,6 +45,7 @@ module.exports = {
     { user }
   ) => {
     try {
+      console.log(user.CompaniesId);
       if (user) {
         const { id } = user;
         const purchase = await new Operations({
@@ -47,6 +53,7 @@ module.exports = {
           NotesId: noteId,
           ProductsId: productId,
           ClientsId: clientId,
+          CompaniesId: user.CompaniesId,
           UsersId: id,
           value,
           amount,
@@ -70,6 +77,7 @@ module.exports = {
           type: 2,
           ProductsId: productId,
           ClientsId: clientId,
+          CompaniesId: user.CompaniesId,
           UsersId: id,
           value,
           amount,

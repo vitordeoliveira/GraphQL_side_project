@@ -1,11 +1,17 @@
 const { Clients } = require("../../database/models");
 
 module.exports = {
-  getClients: async (parent, args) => {
+  getClients: async (parent, args, { user }) => {
     try {
-      const clients = await Clients.findAll();
+      if (user.role === "admin" || user.role === "dev") {
+        return await Clients.findAll();
+      }
 
-      return clients;
+      if (user.role === "subadmin") {
+        return await Clients.findAll({
+          where: { id: user.CompaniesId },
+        });
+      }
     } catch (error) {
       console.log(error);
       return "Error 500";

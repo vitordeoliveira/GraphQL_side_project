@@ -3,8 +3,23 @@ const { Companies, Users } = require("../../database/models");
 module.exports = {
   getCompany: async (parent, args, { user }) => {
     try {
-      if (user) {
+      if (!user) return "User not found";
+      if (user.role === "admin" || user.role === "dev") {
         const company = await Companies.findAll({
+          include: [
+            {
+              model: Users,
+              as: "Users",
+            },
+          ],
+        });
+
+        return company;
+      } else if (user.role == "subadmin") {
+        const company = await Companies.findAll({
+          where: {
+            id: user.CompaniesId,
+          },
           include: [
             {
               model: Users,
@@ -25,10 +40,13 @@ module.exports = {
     try {
       if (user.role === "admin" || user.role === "dev") {
         const company = await Companies.create({ name });
-        return company;
+
+        if (company) {
+          return true;
+        }
       }
+      return false;
     } catch (error) {
-      console.log(error);
       return error;
     }
   },

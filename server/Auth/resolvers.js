@@ -29,13 +29,17 @@ module.exports = {
     return { token, user, error: null };
   },
 
-  register: async (parent, { CompaniesId, role, name, username, password }) => {
+  register: async (
+    parent,
+    { CompaniesId, role, name, username, password },
+    { user }
+  ) => {
     try {
-      if (!(role === "dev" || role === "admin")) throw "Error";
+      if (!(user.role === "dev" || user.role === "admin")) throw "Error";
 
       const hash = bcrypt.hashSync(password, 10);
 
-      const user = await Users.create({
+      const newuser = await Users.create({
         CompaniesId,
         role,
         name,
@@ -43,7 +47,7 @@ module.exports = {
         password: hash,
       });
 
-      return user;
+      return newuser;
     } catch (error) {
       return error;
     }

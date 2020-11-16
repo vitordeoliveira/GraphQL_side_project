@@ -3,17 +3,25 @@ const { Workers, Documents, Companies } = require("../../database/models");
 module.exports = {
   getWorkers: async (parent, args, { user }) => {
     try {
-      if (user) {
-        const workers = await Workers.findAll({
-          include: [
-            {
-              model: Companies,
-            },
-          ],
-        });
+      if (!user) return [];
 
-        return workers;
+      const workers = await Workers.findAll({
+        include: [
+          {
+            model: Companies,
+          },
+        ],
+      });
+
+      if (user.role === "subadmin") {
+        const filterWorkers = Workers.filter(
+          (item) => item.Companies.id == user.CompaniesId
+        );
+
+        return filterWorkers;
       }
+
+      return workers;
     } catch (error) {
       console.log(error);
       return error;

@@ -7,6 +7,7 @@ const typeDefs = gql`
   type User {
     id: ID!
     CompaniesId: ID
+    Company: Company
     role: String!
     name: String!
     username: String!

@@ -78,7 +78,7 @@ module.exports = {
       for (let i = 0; i < operations.length; i++) {
         let item = operations[i];
 
-        if (item.value * item.amount <= 0) continue;
+        if (item.value * item.amount < 0) continue;
 
         total = total + item.value * item.amount;
 
